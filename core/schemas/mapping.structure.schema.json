@@ -1,0 +1,186 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ai-orchestrator-v4/schemas/mapping.structure.schema.json",
+  "title": "Structure Mapping Schema",
+  "description": "Schema for mapping.structure.json - maps structure inventory items to target stack artifacts",
+  "type": "object",
+  "required": ["domain", "pageName", "sourceEntry", "items", "validation"],
+  "properties": {
+    "domain": {
+      "type": "string",
+      "const": "structure",
+      "description": "Domain identifier, must be 'structure'"
+    },
+    "pageName": {
+      "type": "string",
+      "description": "Name of the page being mapped",
+      "minLength": 1
+    },
+    "sourceEntry": {
+      "type": "string",
+      "description": "Path to the legacy source file",
+      "minLength": 1
+    },
+    "items": {
+      "type": "array",
+      "description": "Array of mapping items",
+      "items": {
+        "type": "object",
+        "required": ["ucr", "fromDsl", "sourceInventoryRef", "toStack"],
+        "properties": {
+          "ucr": {
+            "type": "string",
+            "description": "Unique Canonical Reference for this mapping item",
+            "pattern": "^[a-zA-Z0-9._-]+$"
+          },
+          "fromDsl": {
+            "type": "string",
+            "description": "DSL concept being mapped",
+            "pattern": "^structure\\."
+          },
+          "sourceInventoryRef": {
+            "type": "object",
+            "required": ["file", "domain", "itemUcr"],
+            "properties": {
+              "file": {
+                "type": "string",
+                "description": "Source inventory file name"
+              },
+              "domain": {
+                "type": "string",
+                "description": "Domain of the source inventory"
+              },
+              "itemUcr": {
+                "type": "string",
+                "description": "UCR of the item in the source inventory"
+              }
+            }
+          },
+          "toStack": {
+            "type": "object",
+            "required": ["stackKind", "targetId", "targetPath", "targetLayer"],
+            "properties": {
+              "stackKind": {
+                "type": "string",
+                "description": "Kind of artifact in target stack",
+                "enum": ["pageComponent", "component", "formComponent", "listComponent", "layoutComponent", "section", "widget"]
+              },
+              "targetId": {
+                "type": "string",
+                "description": "Target identifier in the stack",
+                "minLength": 1
+              },
+              "targetPath": {
+                "type": "string",
+                "description": "Target file path relative to project root",
+                "minLength": 1
+              },
+              "targetLayer": {
+                "type": "string",
+                "enum": ["presentation", "application", "domain", "infrastructure"],
+                "description": "Architectural layer of the target"
+              },
+              "targetTechnology": {
+                "type": "string",
+                "description": "Technology/framework used (e.g., 'React', 'Vue')"
+              },
+              "targetPattern": {
+                "type": "string",
+                "description": "Design pattern used (e.g., 'presentational', 'container')"
+              },
+              "hints": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Additional hints for code generation"
+              }
+            }
+          },
+          "relations": {
+            "type": "object",
+            "description": "Relations to other mappings",
+            "properties": {
+              "structureUcrs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "layoutUcrs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "routingUcrs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "actionUcrs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "eventUcrs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata",
+            "properties": {
+              "isCritical": {
+                "type": "boolean"
+              },
+              "priority": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["valid", "rejected", "pending"],
+          "description": "Validation status of this mapping"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["severity", "message"],
+            "properties": {
+              "severity": {
+                "type": "string",
+                "enum": ["error", "warning", "info"]
+              },
+              "message": {
+                "type": "string"
+              },
+              "ucr": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

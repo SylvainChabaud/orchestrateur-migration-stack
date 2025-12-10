@@ -1,0 +1,144 @@
+stackId: "my-custom-enterprise"
+label: "My Custom Enterprise Stack"
+description: "Stack front-end entreprise React 19.2 avec design system Peaksys, Vite, TypeScript, Zustand et React Query."
+
+tools:
+  runtime:
+    language: "TypeScript"
+    languageVersion: "5.9"
+    target: "ESNext"
+
+  frontend:
+    library: "React"
+    libraryVersion: "19.2.0"
+    metaFramework: "None"          # pas de Next/Remix pour l’instant
+
+  routing:
+    router: "React Router"
+    routerVersion: "7.9.6"
+
+  i18n:
+    library: "i18next / react-i18next"
+    libraryVersion: "25.6.2"
+
+  design:
+    designSystem: "@peaksys/design-system"
+    designSystemVersion: "8.42.0"
+    uiLibrary: "MUI"
+    uiLibraryVersion: "7.3.5"
+    emotion:
+      enabled: true
+      library: "emotion"
+      version: "11.14.0"
+      note: "Uniquement pour composants custom hors design system"
+
+  stateManagement:
+    globalState:
+      library: "Zustand"
+      version: "5.0.8"
+      note: "Store partagé (package indépendant)"
+    serverState:
+      library: "React Query (TanStack Query)"
+      version: "5.90.7"
+
+  api:
+    httpClient:
+      library: "Axios"
+      version: "1.13.2"
+      note: "Interface de requêtes (package indépendant)"
+    codegen:
+      library: "Orval"
+      version: "7.17.0"
+      note: "Décision d’intégration future (non tranché)"
+
+  validation:
+    schemaValidation:
+      library: "Zod"
+      version: "4.1.x"
+      note: "Validation de formulaires + réponses API"
+
+  forms:
+    formLibrary:
+      library: "react-hook-form"
+      version: "7.66.1"
+
+  build:
+    bundler:
+      library: "Vite"
+      version: "7.2.4"
+
+  tests:
+    unit:
+      runner: "Vitest"
+      version: "4.0.8"
+    component:
+      library: "React Testing Library"
+      version: "16.3.0"
+    e2e:
+      runner: "Cypress"
+      version: "15.6.0"
+    strategyNote: "TU → Vitest, intégration → RTL, E2E → Cypress."
+
+  auth:
+    oidcClient:
+      library: "oidc-client-ts"
+      version: "2.3.1"
+    reactOidc:
+      library: "react-oidc-context"
+      version: "3.3.0"
+
+  devTools:
+    lint:
+      library: "ESLint"
+      version: "9.39.1"
+    format:
+      library: "Prettier"
+      version: "3.6.2"
+    gitHooks:
+      library: "Husky"
+      version: "9.1.7"
+      note: "OK en ligne de commande, hooks existants dans DS"
+    preCommit:
+      library: "lint-staged"
+      version: "16.2.6"
+
+  packageManagers:
+    preferred: "yarn"
+    options:
+      yarn:
+        classic: "1.22.22"
+        berry: "4.12.0"
+        note: "Berry vs Classic à trancher"
+      pnpm:
+        enabled: false
+        version: "9.15.0"
+        note: "Pas compatible pipelines"
+      bun:
+        enabled: true
+        version: "1.1.27"
+
+  monorepo:
+    nx:
+      enabled: true
+      version: "22.1.1"
+    yarnWorkspaces:
+      enabled: true
+      note: "Basé sur yarn classic ou berry"
+    turborepo:
+      enabled: false
+      version: "2.3.0"
+      note: "Hors standards Peaksys"
+
+  automation:
+    dependencyUpdater:
+      library: "Renovate"
+      version: "37.161.0"
+
+  documentation:
+    site:
+      library: "Docusaurus"
+      version: "3.9.2"
+      note: "Décorrélé de la stack cible, utilisable plus tard sur code propre"
+    storybook:
+      library: "Storybook"
+      version: "10.0.7"

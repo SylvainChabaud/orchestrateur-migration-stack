@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ai-orchestrator-v4/schemas/inventory.structure.schema.json",
+  "title": "Structure Inventory Schema",
+  "description": "Schema for inventory.structure.json - describes the hierarchical structure of views/components in the legacy page",
+  "type": "object",
+  "required": ["domain", "pageName", "sourceEntry", "items", "validation"],
+  "properties": {
+    "domain": {
+      "type": "string",
+      "const": "structure",
+      "description": "Domain identifier, must be 'structure'"
+    },
+    "pageName": {
+      "type": "string",
+      "description": "Name of the page being analyzed",
+      "minLength": 1
+    },
+    "sourceEntry": {
+      "type": "string",
+      "description": "Path to the legacy source file",
+      "minLength": 1
+    },
+    "items": {
+      "type": "array",
+      "description": "Array of structure items (views/components)",
+      "items": {
+        "type": "object",
+        "required": ["ucr", "name", "type", "sourcePath", "dslTags"],
+        "properties": {
+          "ucr": {
+            "type": "string",
+            "description": "Unique Canonical Reference for this structure item",
+            "pattern": "^[a-zA-Z0-9._-]+$"
+          },
+          "name": {
+            "type": "string",
+            "description": "Logical name of the view/component"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["root", "container", "presentational", "fragment", "slot", "portal", "list", "form"],
+            "description": "Type of view/component"
+          },
+          "sourcePath": {
+            "type": "string",
+            "description": "Path to the source file or location"
+          },
+          "parentUcr": {
+            "type": ["string", "null"],
+            "description": "UCR of the parent view (null for root)"
+          },
+          "childrenUcrs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of UCRs for child views"
+          },
+          "dslTags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^structure\\."
+            },
+            "description": "DSL tags identifying structure concepts"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata about this structure item",
+            "properties": {
+              "layoutRegion": {
+                "type": "string"
+              },
+              "displayName": {
+                "type": "string"
+              },
+              "isRoutedEntry": {
+                "type": "boolean"
+              },
+              "complexity": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["valid", "rejected", "pending"],
+          "description": "Validation status of this inventory"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["severity", "message"],
+            "properties": {
+              "severity": {
+                "type": "string",
+                "enum": ["error", "warning", "info"]
+              },
+              "message": {
+                "type": "string"
+              },
+              "ucr": {
+                "type": "string",
+                "description": "UCR of the item concerned by this issue"
+              }
+            }
+          },
+          "description": "Array of validation issues"
+        }
+      }
+    }
+  }
+}

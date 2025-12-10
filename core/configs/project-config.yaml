@@ -1,0 +1,165 @@
+# ============================================================
+# 🤖 ai-orchestrator-v4 — POINT D’ENTRÉE
+# ============================================================
+# Rôle de ce fichier :
+# - C’est l’UNIQUE fichier de configuration de l’orchestrateur.
+# - L’utilisateur ne modifie que :
+#     -> project.pageName
+#     -> paths.legacySource
+#
+# Une fois ces deux valeurs renseignées, tu peux demander à l’IA :
+#
+#   « Lis ce fichier project.config.yaml, puis exécute tous les
+#     stages markdown en suivant l’ordre défini dans la section "stages" (phase 0 -> phase 4), 
+#     en s'arrétant au premier Gate ❌ rencontré. »
+#
+# L’IA doit :
+# - Lire le code legacy directement au chemin paths.legacySource
+#   (le code legacy reste dans le repo, il n’est jamais copié
+#   dans workspace/).
+# - Utiliser les guides internes de core/guides-internals.
+# - Générer tous les artefacts dans workspace/.
+# - Respecter les Gates de fin de stage (Gate ✅ / Gate ❌).
+# ============================================================
+
+project:
+  # Nom générique de l’initiative de migration.
+  name: "legacy-to-newStack-migration"
+
+  # NOM LOGIQUE DE LA PAGE
+  # 👉 À MODIFIER PAR L’UTILISATEUR AVANT D’EXÉCUTER L’ORCHESTRATEUR
+  pageName: "CampaignsDetail"
+
+paths:
+  # CHEMIN VERS LE CODE LEGACY À MIGRER
+  # 👉 À MODIFIER PAR L’UTILISATEUR AVANT D’EXÉCUTER L’ORCHESTRATEUR
+  legacySource: "src/packages/promo-boost/components/campaignsDetail/index.js"
+
+  # Racine de l’outil d’orchestration IA dans le repo
+  root: ".ai-tools/ai-orchestrator-v4"
+
+  # Dossier core (socle de l’outil : stages, guides, schemas, configs)
+  core: "${paths.root}/core"
+
+  # Dossier workspace (tout ce qui est généré par l’orchestrateur)
+  workspace: "${paths.root}/workspace"
+
+  # Dossier contenant tous les stages markdown
+  stages: "${paths.core}/stages"
+
+stack:
+  # Profil de stack finale
+  # 👉 À MODIFIER PAR L’UTILISATEUR AVANT D’EXÉCUTER L’ORCHESTRATEUR
+  custom: "${paths.core}/configs/stacks/my-custom-enterprise.stack.yaml"
+
+runtime:
+  # Si true → l’orchestrateur exécute le Stage 00 (Stack Guides Builder)
+  # Si false → il saute 00 et part directement au Stage 01,
+  regenerateStackGuides: false
+
+validation:
+  # Contrôle la validation des schémas JSON
+  # Si true → chaque stage valide son output contre le schéma JSON correspondant
+  # Si false → pas de validation (mode développement rapide)
+  enableSchemaValidation: true
+  
+  # Comportement en cas d'échec de validation
+  # "strict" → Gate ❌ si validation échoue
+  # "warning" → continue avec warnings dans validation.issues
+  validationMode: "strict"
+  
+  # Dossier contenant les schémas JSON
+  schemasPath: "${paths.core}/schemas"
+
+gates:
+  # Chaque stage doit se terminer par :
+  #   ## 🧩 Gate
+  #   Gate ✅
+  # ou
+  #   Gate ❌
+  #
+  # Si enforceAtEachStage = true → l’IA DOIT lire ce bloc et décider si elle continue ou non.
+  enforceAtEachStage: true
+
+  # Si stopOnFailure = true → le pipeline s’arrête dès le premier Gate ❌
+  # et l’IA doit produire un rapport d’échec dans workspace/.
+  stopOnFailure: true
+
+stages:
+  # Cette section documente les phases et l’ordre d’exécution.
+  # L’IA peut l’utiliser comme référence, mais l’ordre principal
+  # reste déterminé par les numéros de fichiers dans core/stages/**.
+  #
+  # PHASE 0 — BOOTSTRAP
+  phase0:
+    - "${paths.stages}/phase-0-bootstrap/00-stack-guides-builder.md"
+    - "${paths.stages}/phase-0-bootstrap/01-project-structure-spec-builder.md"
+    - "${paths.stages}/phase-0-bootstrap/02-legacy-to-dsl-bridge-builder.md"
+
+  # PHASE 1 — ANALYSIS (16 inventaires + summary)
+  phase1:
+    - "${paths.stages}/phase-1-analysis/10-inventory.structure.md"
+    - "${paths.stages}/phase-1-analysis/11-inventory.layout.md"
+    - "${paths.stages}/phase-1-analysis/12-inventory.styles.md"
+    - "${paths.stages}/phase-1-analysis/13-inventory.i18n.md"
+    - "${paths.stages}/phase-1-analysis/14-inventory.config.md"
+    - "${paths.stages}/phase-1-analysis/15-inventory.logic.md"
+    - "${paths.stages}/phase-1-analysis/16-inventory.conditions.md"
+    - "${paths.stages}/phase-1-analysis/17-inventory.hooks.md"
+    - "${paths.stages}/phase-1-analysis/18-inventory.events.md"
+    - "${paths.stages}/phase-1-analysis/19-inventory.dataflows.md"
+    - "${paths.stages}/phase-1-analysis/20-inventory.async.md"
+    - "${paths.stages}/phase-1-analysis/21-inventory.services.md"
+    - "${paths.stages}/phase-1-analysis/22-inventory.routing.md"
+    - "${paths.stages}/phase-1-analysis/23-inventory.effects.md"
+    - "${paths.stages}/phase-1-analysis/24-inventory.actions.md"
+    - "${paths.stages}/phase-1-analysis/25-inventory.tests.md"
+    - "${paths.stages}/phase-1-analysis/26-inventories-summary.md"
+
+  # PHASE 2 — INTERPRETATION (16 mappings + summary)
+  phase2:
+    - "${paths.stages}/phase-2-interpretation/30-mapping.structure.md"
+    - "${paths.stages}/phase-2-interpretation/31-mapping.layout.md"
+    - "${paths.stages}/phase-2-interpretation/32-mapping.styles.md"
+    - "${paths.stages}/phase-2-interpretation/33-mapping.i18n.md"
+    - "${paths.stages}/phase-2-interpretation/34-mapping.config.md"
+    - "${paths.stages}/phase-2-interpretation/35-mapping.logic.md"
+    - "${paths.stages}/phase-2-interpretation/36-mapping.conditions.md"
+    - "${paths.stages}/phase-2-interpretation/37-mapping.hooks.md"
+    - "${paths.stages}/phase-2-interpretation/38-mapping.events.md"
+    - "${paths.stages}/phase-2-interpretation/39-mapping.dataflows.md"
+    - "${paths.stages}/phase-2-interpretation/40-mapping.async.md"
+    - "${paths.stages}/phase-2-interpretation/41-mapping.services.md"
+    - "${paths.stages}/phase-2-interpretation/42-mapping.routing.md"
+    - "${paths.stages}/phase-2-interpretation/43-mapping.effects.md"
+    - "${paths.stages}/phase-2-interpretation/44-mapping.actions.md"
+    - "${paths.stages}/phase-2-interpretation/45-mapping.tests.md"
+    - "${paths.stages}/phase-2-interpretation/46-mappings-summary.md"
+
+  # PHASE 3 — GENERATION
+  phase3:
+    - "${paths.stages}/phase-3-generation/50-generate-types.md"
+    - "${paths.stages}/phase-3-generation/51-generate-services.md"
+    - "${paths.stages}/phase-3-generation/52-generate-stores.md"
+    - "${paths.stages}/phase-3-generation/53-generate-hooks-logic.md"
+    - "${paths.stages}/phase-3-generation/54-generate-hooks-data.md"
+    - "${paths.stages}/phase-3-generation/55-generate-components-atoms.md"
+    - "${paths.stages}/phase-3-generation/56-generate-components-containers.md"
+    - "${paths.stages}/phase-3-generation/57-generate-pages.md"
+    - "${paths.stages}/phase-3-generation/58-generate-routing.md"
+    - "${paths.stages}/phase-3-generation/59-generate-i18n.md"
+    - "${paths.stages}/phase-3-generation/60-generate-tests.md"
+    - "${paths.stages}/phase-3-generation/61-optimize-imports.md"
+    - "${paths.stages}/phase-3-generation/62-generation-summary.md"
+
+  # PHASE 4 — VALIDATION & ARCHIVE
+  phase4:
+    - "${paths.stages}/phase-4-validation/70-validation-static-consistency.md"
+    - "${paths.stages}/phase-4-validation/71-validation-tests-audit.md"
+    - "${paths.stages}/phase-4-validation/72-validation-functional-equivalence.md"
+    - "${paths.stages}/phase-4-validation/73-validation-dependencies-coherence.md"
+    - "${paths.stages}/phase-4-validation/74-validation-integration-consistency.md"
+    - "${paths.stages}/phase-4-validation/75-validation-accessibility-heuristic.md"
+    - "${paths.stages}/phase-4-validation/76-validation-performance-patterns.md"
+    - "${paths.stages}/phase-4-validation/77-validation-quality-compliance.md"
+    - "${paths.stages}/phase-4-validation/78-validation-summary.md"

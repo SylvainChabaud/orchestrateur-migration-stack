@@ -1,0 +1,189 @@
+{
+  "$schema": "project-structure-schema",
+  "version": "1.0.0",
+  "generatedAt": "2025-12-05",
+  "generatedBy": "Stage 01 - Project Structure Spec Builder",
+
+  "project": {
+    "name": "legacy-to-newStack-migration",
+    "pageName": "CampaignsDetail"
+  },
+
+  "projectRoot": "src/",
+
+  "architecture": {
+    "type": "feature-based",
+    "description": "Organisation des fichiers par feature/module métier avec dossiers partagés pour core et components"
+  },
+
+  "pages": {
+    "CampaignsDetail": {
+      "root": "src/features/campaigns",
+      "components": "src/features/campaigns/components",
+      "hooks": "src/features/campaigns/hooks",
+      "stores": "src/features/campaigns/stores",
+      "api": "src/features/campaigns/api",
+      "types": "src/features/campaigns/types",
+      "utils": "src/features/campaigns/utils",
+      "pages": "src/features/campaigns/pages",
+      "tests": "src/features/campaigns/__tests__"
+    }
+  },
+
+  "sharedFolders": {
+    "core": {
+      "root": "src/core",
+      "api": "src/core/api",
+      "auth": "src/core/auth",
+      "errors": "src/core/errors",
+      "i18n": "src/core/i18n",
+      "theme": "src/core/theme"
+    },
+    "components": {
+      "root": "src/components",
+      "atoms": "src/components/atoms",
+      "molecules": "src/components/molecules",
+      "organisms": "src/components/organisms",
+      "templates": "src/components/templates"
+    },
+    "routes": "src/routes",
+    "locales": "src/locales",
+    "utils": "src/utils",
+    "types": "src/types",
+    "test": "src/test"
+  },
+
+  "naming": {
+    "component": {
+      "case": "PascalCase",
+      "extension": ".tsx",
+      "example": "CampaignCard.tsx"
+    },
+    "hook": {
+      "case": "camelCase",
+      "prefix": "use",
+      "extension": ".ts",
+      "example": "useCampaigns.ts"
+    },
+    "store": {
+      "case": "camelCase",
+      "suffix": "Store",
+      "extension": ".ts",
+      "example": "campaignStore.ts"
+    },
+    "types": {
+      "case": "PascalCase",
+      "extension": ".types.ts",
+      "example": "Campaign.types.ts"
+    },
+    "test": {
+      "pattern": "${ComponentName}.test.tsx",
+      "example": "CampaignCard.test.tsx"
+    },
+    "styles": {
+      "pattern": "${ComponentName}.styles.ts",
+      "example": "CampaignCard.styles.ts"
+    },
+    "file": {
+      "case": "PascalCase",
+      "note": "Les fichiers de composants utilisent PascalCase, les autres fichiers utilisent camelCase ou kebab-case selon le contexte"
+    }
+  },
+
+  "importOrder": [
+    "1. React et core libraries (react, react-dom)",
+    "2. Third-party libraries (react-router, @tanstack/react-query, react-i18next)",
+    "3. Design system / UI components (@mui/material, @peaksys/design-system)",
+    "4. Internal shared modules avec alias (@/hooks, @/core, @/components)",
+    "5. Feature-specific imports (relative imports)",
+    "6. Styles",
+    "7. Types (si séparés)"
+  ],
+
+  "pathAliases": {
+    "@/*": ["src/*"],
+    "@components/*": ["src/components/*"],
+    "@features/*": ["src/features/*"],
+    "@hooks/*": ["src/hooks/*"],
+    "@stores/*": ["src/stores/*"],
+    "@types/*": ["src/types/*"],
+    "@utils/*": ["src/utils/*"],
+    "@services/*": ["src/services/*"],
+    "@core/*": ["src/core/*"]
+  },
+
+  "featureModuleStructure": {
+    "pattern": "src/features/[feature-name]/",
+    "subfolders": [
+      "components/",
+      "hooks/",
+      "stores/",
+      "types/",
+      "api/",
+      "utils/",
+      "pages/",
+      "__tests__/"
+    ],
+    "requiredFiles": [
+      "index.ts"
+    ]
+  },
+
+  "componentStructure": {
+    "pattern": "ComponentName/",
+    "files": [
+      "ComponentName.tsx",
+      "ComponentName.test.tsx",
+      "ComponentName.styles.ts",
+      "index.ts"
+    ],
+    "optional": [
+      "ComponentName.types.ts"
+    ]
+  },
+
+  "i18n": {
+    "rootFolder": "src/locales",
+    "structure": "locales/{lang}/{namespace}.json",
+    "namespaces": ["common", "campaigns", "translation"],
+    "defaultNamespace": "translation",
+    "fallbackLanguage": "en"
+  },
+
+  "routing": {
+    "configFolder": "src/routes",
+    "pattern": "React Router 7 avec createBrowserRouter",
+    "protectedRoutes": true,
+    "routeConstants": "src/routes/paths.ts"
+  },
+
+  "testing": {
+    "framework": "Vitest + React Testing Library",
+    "configFile": "vitest.config.ts",
+    "setupFile": "src/test/setup.ts",
+    "testPattern": "**/*.{test,spec}.{ts,tsx}",
+    "coverageFolder": "coverage/",
+    "mocksFolder": "src/test/mocks/"
+  },
+
+  "generationRules": {
+    "mustCreateFolders": true,
+    "cleanEmptyFolders": false,
+    "useBarrelExports": true,
+    "generateIndexFiles": true,
+    "enforceTypeScript": true
+  },
+
+  "stack": {
+    "react": "19.2",
+    "typescript": "5.9",
+    "router": "react-router@7.9.6",
+    "stateManagement": "zustand@5.0.8",
+    "dataFetching": "tanstack-query@5.90.7",
+    "i18n": "i18next@25.6.2",
+    "forms": "react-hook-form@7.66.1 + zod@4.1.x",
+    "ui": "mui@7.3.5 + @peaksys/design-system@8.42.0",
+    "testing": "vitest@4.0.8",
+    "build": "vite@7.2.4"
+  }
+}

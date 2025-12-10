@@ -1,0 +1,221 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ai-orchestrator-v4/schemas/generation.types.schema.json",
+  "title": "Types Generation Metadata Schema",
+  "description": "Schema for generation.types.meta.json - metadata for generated type definitions (Stage 50)",
+  "type": "object",
+  "required": ["domain", "stageId", "pageName", "filesGenerated", "statistics", "validation"],
+  "properties": {
+    "domain": {
+      "type": "string",
+      "const": "types",
+      "description": "Domain identifier, must be 'types'"
+    },
+    "stageId": {
+      "type": "string",
+      "const": "50",
+      "description": "Stage identifier, must be '50'"
+    },
+    "pageName": {
+      "type": "string",
+      "description": "Name of the page for which types are generated",
+      "minLength": 1
+    },
+    "filesGenerated": {
+      "type": "array",
+      "description": "List of generated type files",
+      "items": {
+        "type": "object",
+        "required": ["path", "typeName"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative path to the generated file"
+          },
+          "typeName": {
+            "type": "string",
+            "description": "Name of the type defined in this file"
+          },
+          "ucrTrace": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "UCRs traced to this type"
+          },
+          "linesOfCode": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of lines of code generated"
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "type"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Property name"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Property type"
+                },
+                "nullable": {
+                  "type": "boolean",
+                  "description": "Whether the property is nullable"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Property documentation"
+                }
+              }
+            },
+            "description": "Properties defined in this type"
+          }
+        }
+      }
+    },
+    "statistics": {
+      "type": "object",
+      "required": ["totalFiles"],
+      "properties": {
+        "totalFiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of type files generated"
+        },
+        "totalTypes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of types defined"
+        },
+        "totalProperties": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of properties across all types"
+        },
+        "totalLinesOfCode": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total lines of code generated"
+        },
+        "typesByCategory": {
+          "type": "object",
+          "description": "Types grouped by category",
+          "properties": {
+            "entities": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "dtos": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "interfaces": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "enums": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unions": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["valid", "rejected", "pending"],
+          "description": "Validation status of this generation stage"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["severity", "message"],
+            "properties": {
+              "severity": {
+                "type": "string",
+                "enum": ["error", "warning", "info"]
+              },
+              "message": {
+                "type": "string",
+                "description": "Issue description"
+              },
+              "filePath": {
+                "type": "string",
+                "description": "File concerned by this issue"
+              },
+              "typeName": {
+                "type": "string",
+                "description": "Type name concerned by this issue"
+              }
+            }
+          },
+          "description": "Array of validation issues"
+        },
+        "checks": {
+          "type": "object",
+          "description": "Detailed validation checks",
+          "properties": {
+            "allTypesNamed": {
+              "type": "boolean"
+            },
+            "noCircularReferences": {
+              "type": "boolean"
+            },
+            "allPropertiesTyped": {
+              "type": "boolean"
+            },
+            "stackGuidesApplied": {
+              "type": "boolean"
+            },
+            "namingConventionsRespected": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "mappingSources": {
+      "type": "object",
+      "description": "Source mappings used for generation",
+      "properties": {
+        "mappingTypesLoaded": {
+          "type": "boolean"
+        },
+        "mappingStructureLoaded": {
+          "type": "boolean"
+        },
+        "mappingDataLoaded": {
+          "type": "boolean"
+        }
+      }
+    },
+    "stackGuides": {
+      "type": "object",
+      "description": "Stack guides applied",
+      "properties": {
+        "guideTypesApplied": {
+          "type": "boolean"
+        },
+        "guideNamingApplied": {
+          "type": "boolean"
+        },
+        "guideConventionsApplied": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

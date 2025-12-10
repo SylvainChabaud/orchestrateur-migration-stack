@@ -1,0 +1,319 @@
+{
+  "domain": "structure",
+  "pageName": "CampaignsDetail",
+  "sourceEntry": "src/packages/promo-boost/components/campaignsDetail/index.js",
+  "components": [
+    {
+      "ucr": "node-root",
+      "name": "CampaignsDetailContainer",
+      "kind": "function",
+      "type": "component",
+      "sourcePath": "src/packages/promo-boost/components/campaignsDetail/index.js",
+      "children": [
+        "node-campaign-informations",
+        "node-campaigns-detail-filters",
+        "node-campaigns-detail-graph",
+        "node-campaigns-detail-table"
+      ],
+      "imports": [
+        { "name": "Grid", "from": "@material-ui/core", "kind": "named" },
+        { "name": "IconButton", "from": "@material-ui/core", "kind": "named" },
+        { "name": "Tab", "from": "@material-ui/core", "kind": "named" },
+        { "name": "Tabs", "from": "@material-ui/core", "kind": "named" },
+        { "name": "Typography", "from": "@material-ui/core", "kind": "named" },
+        { "name": "useHistory", "from": "react-router-dom", "kind": "named" },
+        { "name": "useEmptyFilteredTableValues", "from": "packages/hooks/useEmptyFilteredTable", "kind": "named" },
+        { "name": "Button", "from": "../../../design-system", "kind": "named" },
+        { "name": "Loader", "from": "../../../ui", "kind": "named" },
+        { "name": "useCampaignsTable", "from": "./useCampaignsTable", "kind": "named" },
+        { "name": "useI18n", "from": "../../../hooks", "kind": "named" },
+        { "name": "CampaignInformationsContainer", "from": "./components/campaignInformations", "kind": "default" },
+        { "name": "CampaignsDetailFilters", "from": "./components/CampaignsDetailFilters", "kind": "default" },
+        { "name": "CampaignsDetailGraph", "from": "./components/CampaignsDetailGraph", "kind": "default" },
+        { "name": "CampaignsDetailTable", "from": "./components/CampaignsDetailTable", "kind": "default" }
+      ],
+      "metadata": {
+        "root": true,
+        "isPage": true,
+        "hasConditionalRender": true,
+        "conditionalRenderDescriptions": [
+          "Loading state: displays Loader when isFirstFetching is true",
+          "Tab-based conditional: displays CampaignsDetailFilters/Graph/Table when hasBodyData=true, else displays CampaignInformationsContainer",
+          "hasTableData conditional: shows Tabs container only when table has data or filter is used"
+        ],
+        "styledComponents": [
+          "StyledBoxContent",
+          "StyledContainer",
+          "StyledDiv",
+          "StyledFilterContainer",
+          "StyledGraphContainer",
+          "StyledInformationsContainer",
+          "StyledLoaderContent",
+          "StyledMainContent",
+          "StyledTitleContent"
+        ]
+      },
+      "props": [],
+      "state": [
+        { "name": "selectedTab", "initialValue": "YOUR_CAMPAIGNS (0)", "setter": "setSelectedTab" },
+        { "name": "isOpenGraph", "initialValue": "true", "setter": "setIsOpenGraph" }
+      ],
+      "exports": "default"
+    },
+    {
+      "ucr": "node-campaign-informations",
+      "name": "CampaignInformationsContainer",
+      "kind": "function",
+      "type": "component",
+      "sourcePath": "src/packages/promo-boost/components/campaignsDetail/components/campaignInformations/index.js",
+      "children": [],
+      "imports": [
+        { "name": "Typography", "from": "@material-ui/core", "kind": "named" },
+        { "name": "CheckIcon", "from": "../../../../../ui/components/Icon", "kind": "named" },
+        { "name": "EurosIcon", "from": "../../../../../ui/components/Icon", "kind": "named" },
+        { "name": "EyeIcon", "from": "../../../../../ui/components/Icon", "kind": "named" },
+        { "name": "RocketIcon", "from": "../../../../../ui/components/Icon", "kind": "named" },
+        { "name": "userHasPermission", "from": "../../../../../helper", "kind": "named" },
+        { "name": "PROMO_BOOST_FEATURES", "from": "../../../../../helper", "kind": "named" },
+        { "name": "useI18n", "from": "../../../../../hooks", "kind": "named" },
+        { "name": "usePermissions", "from": "../../../../../hooks", "kind": "named" },
+        { "name": "colors", "from": "../../../../../theme/colors", "kind": "default" },
+        { "name": "palette", "from": "../../../../../theme/palette", "kind": "default" }
+      ],
+      "metadata": {
+        "root": false,
+        "hasConditionalRender": true,
+        "conditionalRenderDescriptions": [
+          "shouldDisplayOmnibus: conditional block for omnibus section based on user permissions"
+        ],
+        "styledComponents": [
+          "StyledBlock",
+          "StyledBlockFaq",
+          "StyledBlockParent",
+          "StyledBlockParentProduct",
+          "StyledBlockProduct",
+          "StyledBlockTitle",
+          "StyledCardItem",
+          "StyledCardTitle",
+          "StyledFlexBlock",
+          "StyledIcon",
+          "StyledImage",
+          "StyledImageProduct",
+          "StyledInformationsContainer",
+          "StyledLeftPart",
+          "StyledRightPart",
+          "StyledSubtitleFaq",
+          "StyledSubtitleProduct",
+          "StyledTextProduct"
+        ],
+        "description": "FAQ and product informations page displayed when user has no campaigns"
+      },
+      "props": [],
+      "exports": "default"
+    },
+    {
+      "ucr": "node-campaigns-detail-filters",
+      "name": "CampaignsDetailFilters",
+      "kind": "function",
+      "type": "component",
+      "sourcePath": "src/packages/promo-boost/components/campaignsDetail/components/CampaignsDetailFilters/index.js",
+      "children": [],
+      "imports": [
+        { "name": "Grid", "from": "@material-ui/core", "kind": "named" },
+        { "name": "useSetEmptyFilteredTableValues", "from": "packages/hooks/useEmptyFilteredTable", "kind": "named" },
+        { "name": "AutocompleteInput", "from": "../../../../../design-system", "kind": "named" },
+        { "name": "DatePicker", "from": "../../../../../design-system", "kind": "named" },
+        { "name": "ResetIcon", "from": "../../../../../ui/components/Icon", "kind": "named" },
+        { "name": "useEntity", "from": "../../../../../hooks", "kind": "named" },
+        { "name": "useI18n", "from": "../../../../../hooks", "kind": "named" },
+        { "name": "usePermissions", "from": "../../../../../hooks", "kind": "named" },
+        { "name": "useFilter", "from": "./useFilter", "kind": "named" },
+        { "name": "Selector", "from": "../../../../../design-system/atoms/Selector/selector", "kind": "default" }
+      ],
+      "metadata": {
+        "root": false,
+        "hasConditionalRender": true,
+        "conditionalRenderDescriptions": [
+          "isAdminOrAgency: conditional display of advertiser autocomplete",
+          "isAdminAndHasAgencyFieldPermission: conditional display of agency autocomplete",
+          "duration === CUSTOM_PERIOD: conditional display of date pickers"
+        ],
+        "styledComponents": [
+          "ResetButton",
+          "ResetButtonContainer",
+          "StyledAutocompleteContainer",
+          "StyledChip",
+          "StyledDatePeriodInputsContainer",
+          "StyledDatePicker",
+          "StyledFilterBloc",
+          "StyledInputsContainer",
+          "StyledSelector",
+          "StyledTypographyTitle"
+        ],
+        "description": "Filter panel for campaigns table with autocomplete, selectors and date pickers"
+      },
+      "props": [
+        { "name": "onFilterFetch", "type": "func", "required": true },
+        { "name": "setIsFilterUsed", "type": "func", "required": false },
+        { "name": "onClearFilters", "type": "func", "required": false }
+      ],
+      "exports": "default"
+    },
+    {
+      "ucr": "node-campaigns-detail-graph",
+      "name": "CampaignsDetailGraph",
+      "kind": "function",
+      "type": "component",
+      "sourcePath": "src/packages/promo-boost/components/campaignsDetail/components/CampaignsDetailGraph/index.js",
+      "children": [
+        "node-kpi-selector"
+      ],
+      "imports": [
+        { "name": "CartesianGrid", "from": "recharts", "kind": "named" },
+        { "name": "ComposedChart", "from": "recharts", "kind": "named" },
+        { "name": "Legend", "from": "recharts", "kind": "named" },
+        { "name": "Line", "from": "recharts", "kind": "named" },
+        { "name": "ResponsiveContainer", "from": "recharts", "kind": "named" },
+        { "name": "Tooltip", "from": "recharts", "kind": "named" },
+        { "name": "XAxis", "from": "recharts", "kind": "named" },
+        { "name": "YAxis", "from": "recharts", "kind": "named" },
+        { "name": "useI18n", "from": "../../../../../hooks", "kind": "named" },
+        { "name": "useMaxDomain", "from": "../../../../../ui/components/ComparisonGraph/hooks", "kind": "named" },
+        { "name": "theme", "from": "../../../../../theme", "kind": "default" },
+        { "name": "TickX", "from": "../../../../../ui/components/ComparisonGraph/TickX", "kind": "default" },
+        { "name": "useCampaignsDetailGraph", "from": "./useCampaignsDetailGraph", "kind": "default" },
+        { "name": "KpiSelector", "from": "./KpiSelector", "kind": "named" }
+      ],
+      "metadata": {
+        "root": false,
+        "hasConditionalRender": true,
+        "conditionalRenderDescriptions": [
+          "isNotNilOrEmpty(selectedKpis[1]): conditional display of second Y-axis and second Line"
+        ],
+        "styledComponents": [
+          "ChartContainer",
+          "StyledGrid"
+        ],
+        "externalLibrary": "recharts",
+        "description": "KPI chart/graph component using recharts library for data visualization"
+      },
+      "props": [
+        { "name": "campaignsDetailFilters", "type": "shape", "required": false },
+        { "name": "isOpenGraph", "type": "bool", "required": false, "defaultValue": true }
+      ],
+      "exports": "default"
+    },
+    {
+      "ucr": "node-kpi-selector",
+      "name": "KpiSelector",
+      "kind": "function",
+      "type": "component",
+      "sourcePath": "src/packages/promo-boost/components/campaignsDetail/components/CampaignsDetailGraph/KpiSelector.js",
+      "children": [],
+      "imports": [
+        { "name": "Grid", "from": "@material-ui/core", "kind": "named" },
+        { "name": "useI18n", "from": "../../../../../hooks", "kind": "named" }
+      ],
+      "metadata": {
+        "root": false,
+        "styledComponents": [
+          "StyledButton",
+          "StyledCardContent",
+          "StyledKpiData",
+          "StyledKpiName",
+          "StyledTypography",
+          "StyledKpiSelector"
+        ],
+        "description": "KPI selection buttons for graph filtering"
+      },
+      "props": [
+        { "name": "selectedKpis", "type": "arrayOf(string)", "required": true },
+        { "name": "handleChange", "type": "func", "required": true },
+        { "name": "kpisData", "type": "shape", "required": true }
+      ],
+      "exports": "named"
+    },
+    {
+      "ucr": "node-campaigns-detail-table",
+      "name": "CampaignsDetailTable",
+      "kind": "function",
+      "type": "component",
+      "sourcePath": "src/packages/promo-boost/components/campaignsDetail/components/CampaignsDetailTable.js",
+      "children": [
+        "node-campaign-deactivation-modal"
+      ],
+      "imports": [
+        { "name": "useHistory", "from": "react-router-dom", "kind": "named" },
+        { "name": "useLocation", "from": "react-router-dom", "kind": "named" },
+        { "name": "useI18n", "from": "../../../../hooks", "kind": "named" },
+        { "name": "CampaignDeactivationModal", "from": "./CampaignDeactivationModal", "kind": "default" },
+        { "name": "TableContainer", "from": "../../../../design-system/molecules/TableContainer", "kind": "default" }
+      ],
+      "metadata": {
+        "root": false,
+        "styledComponents": [
+          "StyledTableContainer",
+          "StyledTableHeading"
+        ],
+        "description": "Table component displaying campaigns data with deactivation modal"
+      },
+      "props": [
+        { "name": "tableProps", "type": "shape", "required": true },
+        { "name": "onDeactivateCampaignConfirmation", "type": "func", "required": false },
+        { "name": "campaignDetail", "type": "shape", "required": false },
+        { "name": "modalProps", "type": "shape", "required": true }
+      ],
+      "exports": "default"
+    },
+    {
+      "ucr": "node-campaign-deactivation-modal",
+      "name": "CampaignDeactivationModal",
+      "kind": "function",
+      "type": "component",
+      "sourcePath": "src/packages/promo-boost/components/campaignsDetail/components/CampaignDeactivationModal.js",
+      "children": [],
+      "imports": [
+        { "name": "Typography", "from": "@material-ui/core", "kind": "named" },
+        { "name": "Modal", "from": "../../../../design-system", "kind": "named" },
+        { "name": "useI18n", "from": "../../../../hooks", "kind": "named" }
+      ],
+      "metadata": {
+        "root": false,
+        "description": "Confirmation modal for campaign deactivation action"
+      },
+      "props": [
+        { "name": "isModalOpen", "type": "bool", "required": false, "defaultValue": false },
+        { "name": "onModalClose", "type": "func", "required": false },
+        { "name": "onDeactivateCampaignConfirmation", "type": "func", "required": false },
+        { "name": "campaignDetail", "type": "shape", "required": false }
+      ],
+      "exports": "default"
+    }
+  ],
+  "validation": {
+    "status": "valid",
+    "issues": [],
+    "checks": {
+      "domainCorrect": true,
+      "pageNamePresent": true,
+      "sourceEntryPresent": true,
+      "componentsNotEmpty": true,
+      "allUcrsUnique": true,
+      "rootNodeExists": true,
+      "allChildrenExist": true,
+      "noCycles": true,
+      "allSourcePathsValid": true
+    },
+    "summary": {
+      "totalComponents": 7,
+      "rootComponent": "CampaignsDetailContainer",
+      "maxDepth": 2,
+      "leafComponents": [
+        "CampaignInformationsContainer",
+        "CampaignsDetailFilters",
+        "KpiSelector",
+        "CampaignDeactivationModal"
+      ]
+    }
+  }
+}

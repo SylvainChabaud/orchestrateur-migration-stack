@@ -1,0 +1,1001 @@
+{
+  "domain": "bridge-legacy-to-dsl",
+  "version": "1.0.0",
+  "generatedAt": "2025-12-05T00:00:00.000Z",
+  "generatedBy": "Stage 02 - Legacy to DSL Bridge Builder",
+  "legacyStack": "react-17-material-ui-v4",
+  "legacyStackDetails": {
+    "framework": "React 17",
+    "language": "JavaScript (ES6+)",
+    "uiLibrary": "Material-UI v4 (@material-ui/core)",
+    "routing": "React Router v5 (react-router-dom)",
+    "styling": "styled-components",
+    "stateManagement": "Custom hooks + Context + Zustand (usePromoBoostStore)",
+    "i18n": "Custom useI18n hook",
+    "utilities": ["ramda", "ramda-adjunct", "moment.js"],
+    "dataFetching": "Custom dispatched actions (Redux-like pattern)"
+  },
+  "targetStack": {
+    "framework": "React 19.2",
+    "language": "TypeScript 5.9",
+    "uiLibrary": "MUI 7.3.5 + @peaksys/design-system 8.42.0",
+    "routing": "React Router 7.9.6",
+    "styling": "Emotion (sx prop + styled)",
+    "stateManagement": "Zustand 5.0.8",
+    "i18n": "i18next 25.6.2 + react-i18next",
+    "dataFetching": "TanStack Query 5.90.7",
+    "forms": "react-hook-form 7.66.1 + Zod 4.1.x",
+    "testing": "Vitest 4.0.8 + React Testing Library"
+  },
+  "dslConcepts": [
+    {
+      "id": "structure.viewNode",
+      "description": "Unité de vue / composant / template participant à la hiérarchie",
+      "legacyPatterns": [
+        "const ComponentName = () => { return (<JSX />); }",
+        "function ComponentName() { return (<JSX />); }",
+        "export default ComponentName",
+        "export const ComponentName = memo(() => ...)"
+      ]
+    },
+    {
+      "id": "structure.rootView",
+      "description": "Composant racine d'une page ou feature",
+      "legacyPatterns": [
+        "const CampaignsDetailContainer = () => { ... }",
+        "export default RootComponent",
+        "Fichier index.js exportant le composant principal"
+      ]
+    },
+    {
+      "id": "structure.childView",
+      "description": "Composant enfant importé dans un parent",
+      "legacyPatterns": [
+        "import ChildComponent from './components/ChildComponent'",
+        "<ChildComponent {...props} />"
+      ]
+    },
+    {
+      "id": "structure.containerView",
+      "description": "Composant conteneur gérant la logique métier",
+      "legacyPatterns": [
+        "*Container = () => { ... useCampaignsTable() ... }",
+        "Composant utilisant des hooks métier (useXxxTable, useXxxData)"
+      ]
+    },
+    {
+      "id": "structure.presentationalView",
+      "description": "Composant purement présentationnel sans logique",
+      "legacyPatterns": [
+        "const DisplayComponent = ({ data }) => <div>{data}</div>",
+        "Composant ne contenant que du JSX et des props"
+      ]
+    },
+    {
+      "id": "structure.fragment",
+      "description": "Fragment React pour grouper sans wrapper DOM",
+      "legacyPatterns": [
+        "<React.Fragment>...</React.Fragment>",
+        "<>...</>"
+      ]
+    },
+    {
+      "id": "structure.slot",
+      "description": "Zone de contenu dynamique (children, render props)",
+      "legacyPatterns": [
+        "{children}",
+        "{renderContent()}",
+        "props.children"
+      ]
+    },
+    {
+      "id": "structure.portal",
+      "description": "Rendu hors de la hiérarchie DOM parent",
+      "legacyPatterns": [
+        "ReactDOM.createPortal(child, container)",
+        "Modals rendues via portal"
+      ]
+    },
+    {
+      "id": "structure.viewHierarchy",
+      "description": "Organisation hiérarchique des vues",
+      "legacyPatterns": [
+        "Structure imbriquée de composants",
+        "Parent > Child > GrandChild pattern"
+      ]
+    },
+    {
+      "id": "logic.localState",
+      "description": "État local du composant",
+      "legacyPatterns": [
+        "const [state, setState] = useState(initialValue)",
+        "const [selectedTab, setSelectedTab] = useState(YOUR_CAMPAIGNS)",
+        "const [isOpenGraph, setIsOpenGraph] = useState(true)"
+      ]
+    },
+    {
+      "id": "logic.derivedState",
+      "description": "État calculé à partir d'autres états",
+      "legacyPatterns": [
+        "const isEmptyBodyData = (tableProps?.externalData?.tableData?.bodyData || []).length === 0",
+        "const hasTableData = !isEmptyBodyData || isFilterUsed",
+        "const hasBodyData = selectedTab === YOUR_CAMPAIGNS"
+      ]
+    },
+    {
+      "id": "logic.effect",
+      "description": "Effet secondaire générique",
+      "legacyPatterns": [
+        "useEffect(() => { ... }, [deps])",
+        "useEffectOnce(() => { ... })"
+      ]
+    },
+    {
+      "id": "logic.sideEffect",
+      "description": "Effet modifiant l'état externe ou le DOM",
+      "legacyPatterns": [
+        "useEffect(() => { document.title = '...' }, [])",
+        "useEffect avec modifications globales"
+      ]
+    },
+    {
+      "id": "logic.businessRule",
+      "description": "Règle métier encapsulée",
+      "legacyPatterns": [
+        "const selectedPage = isRedirect || (isEmptyBodyData && !isFilterUsed) ? CAMPAIGN_INFORMATIONS : YOUR_CAMPAIGNS",
+        "Logique conditionnelle métier dans le composant ou hook"
+      ]
+    },
+    {
+      "id": "logic.computedSelector",
+      "description": "Sélecteur calculé sur le state",
+      "legacyPatterns": [
+        "usePromoBoostStore(state => state.someValue)",
+        "Extraction sélective depuis un store"
+      ]
+    },
+    {
+      "id": "logic.errorBoundary",
+      "description": "Gestion des erreurs de rendu",
+      "legacyPatterns": [
+        "class ErrorBoundary extends React.Component",
+        "componentDidCatch(error, info)"
+      ]
+    },
+    {
+      "id": "effect.logicTriggered",
+      "description": "Effet déclenché par changement logique (state/props)",
+      "legacyPatterns": [
+        "useEffect(() => { setSelectedTab(selectedPage); }, [isEmptyBodyData, isRedirect, isFilterUsed])",
+        "useEffect avec dépendances sur des valeurs calculées"
+      ]
+    },
+    {
+      "id": "effect.async",
+      "description": "Effet asynchrone (polling, timers, intervals)",
+      "legacyPatterns": [
+        "setInterval(() => { ... }, delay)",
+        "setTimeout(() => { ... }, delay)",
+        "Polling avec useEffect + interval"
+      ]
+    },
+    {
+      "id": "effect.ui.focus",
+      "description": "Mise au focus d'un élément",
+      "legacyPatterns": [
+        "inputRef.current?.focus()",
+        "useEffect(() => { ref.current?.focus() }, [])"
+      ]
+    },
+    {
+      "id": "effect.ui.scroll",
+      "description": "Scroll automatique ou repositionnement",
+      "legacyPatterns": [
+        "element.scrollIntoView()",
+        "window.scrollTo(0, 0)"
+      ]
+    },
+    {
+      "id": "effect.ui.animation",
+      "description": "Animations déclenchées par effet",
+      "legacyPatterns": [
+        "Ajout/retrait de classes CSS pour animations",
+        "Transition CSS via changement de state"
+      ]
+    },
+    {
+      "id": "effect.ui.measure",
+      "description": "Mesures DOM (getBoundingClientRect, resize)",
+      "legacyPatterns": [
+        "element.getBoundingClientRect()",
+        "ResizeObserver",
+        "useLayoutEffect pour mesures"
+      ]
+    },
+    {
+      "id": "effect.lifecycle.mount",
+      "description": "Effet au montage du composant",
+      "legacyPatterns": [
+        "useEffect(() => { ... }, [])",
+        "useEffectOnce(() => { ... })",
+        "componentDidMount()"
+      ]
+    },
+    {
+      "id": "effect.lifecycle.unmount",
+      "description": "Effet au démontage (cleanup)",
+      "legacyPatterns": [
+        "useEffect(() => { return () => { cleanup() } }, [])",
+        "clearInterval, clearTimeout",
+        "removeEventListener"
+      ]
+    },
+    {
+      "id": "effect.navigation",
+      "description": "Effet provoquant une navigation",
+      "legacyPatterns": [
+        "history.push(path)",
+        "history.replace(path)",
+        "history.goBack()"
+      ]
+    },
+    {
+      "id": "effect.eventDriven",
+      "description": "Effet déclenché par événements globaux",
+      "legacyPatterns": [
+        "window.addEventListener('resize', handler)",
+        "document.addEventListener('keydown', handler)"
+      ]
+    },
+    {
+      "id": "data.dataSource",
+      "description": "Source de données (API, store, context)",
+      "legacyPatterns": [
+        "useDispatchedAction(customGetList)",
+        "useCampaignsTable()",
+        "usePromoBoostStore()"
+      ]
+    },
+    {
+      "id": "data.query",
+      "description": "Requête de lecture de données",
+      "legacyPatterns": [
+        "getCampaignsDetail(..., callback)",
+        "getAd(..., callbackFunc)",
+        "useDispatchedAction pour fetch GET"
+      ]
+    },
+    {
+      "id": "data.mutation",
+      "description": "Mutation de données (create, update, delete)",
+      "legacyPatterns": [
+        "patchAdDeactivation(...)",
+        "customCreate(...)",
+        "onDeactivateCampaignConfirmation"
+      ]
+    },
+    {
+      "id": "data.command",
+      "description": "Commande métier (action déclenchée)",
+      "legacyPatterns": [
+        "onCreateCampaign = () => history.push(CAMPAIGN_CREATE_PATH)",
+        "onFilterFetch(values)",
+        "Actions déclenchées par l'utilisateur"
+      ]
+    },
+    {
+      "id": "data.endpoint",
+      "description": "Point d'API appelé",
+      "legacyPatterns": [
+        "customGetList, customGetOne, customCreate",
+        "Fonctions d'appel API dans services/"
+      ]
+    },
+    {
+      "id": "data.requestPayload",
+      "description": "Payload envoyé à l'API",
+      "legacyPatterns": [
+        "{ filters, pagination, sort }",
+        "Arguments passés aux fonctions de fetch"
+      ]
+    },
+    {
+      "id": "data.responsePayload",
+      "description": "Payload reçu de l'API",
+      "legacyPatterns": [
+        "callback({ data, errorMessage })",
+        "tableProps.externalData.tableData.bodyData"
+      ]
+    },
+    {
+      "id": "data.pagination",
+      "description": "Gestion de la pagination",
+      "legacyPatterns": [
+        "paginationData",
+        "onPagination",
+        "page, perPage, total"
+      ]
+    },
+    {
+      "id": "data.filter",
+      "description": "Filtres appliqués aux données",
+      "legacyPatterns": [
+        "campaignsDetailFilters",
+        "onFilterFetch",
+        "CampaignsDetailFilters component"
+      ]
+    },
+    {
+      "id": "data.sort",
+      "description": "Tri des données",
+      "legacyPatterns": [
+        "onSortAction",
+        "sortField, sortOrder"
+      ]
+    },
+    {
+      "id": "data.cacheKey",
+      "description": "Clé de cache pour les données",
+      "legacyPatterns": [
+        "Identifiant unique pour données mises en cache",
+        "Pattern queryKey futur TanStack Query"
+      ]
+    },
+    {
+      "id": "data.errorHandling",
+      "description": "Gestion des erreurs de données",
+      "legacyPatterns": [
+        "errorMessage dans callback",
+        "try/catch autour des fetches",
+        "useAlerts() pour afficher erreurs"
+      ]
+    },
+    {
+      "id": "condition.visibility",
+      "description": "Condition d'affichage d'un élément",
+      "legacyPatterns": [
+        "{hasTableData && (<Component />)}",
+        "{hasBodyData ? (...) : (...)}",
+        "if (isFirstFetching) return <Loader />"
+      ]
+    },
+    {
+      "id": "condition.enabledDisabled",
+      "description": "Condition d'activation/désactivation",
+      "legacyPatterns": [
+        "disabled={!isValid}",
+        "Attribut disabled conditionnel"
+      ]
+    },
+    {
+      "id": "condition.branchIf",
+      "description": "Branchement conditionnel if/else",
+      "legacyPatterns": [
+        "if (condition) { ... } else { ... }",
+        "condition ? valueA : valueB"
+      ]
+    },
+    {
+      "id": "condition.branchSwitch",
+      "description": "Branchement switch/case",
+      "legacyPatterns": [
+        "switch (value) { case X: ... }",
+        "Objet de mapping { [key]: component }"
+      ]
+    },
+    {
+      "id": "condition.logicalAndOr",
+      "description": "Opérateurs logiques && / ||",
+      "legacyPatterns": [
+        "isRedirect || (isEmptyBodyData && !isFilterUsed)",
+        "Combinaisons de conditions booléennes"
+      ]
+    },
+    {
+      "id": "condition.featureFlag",
+      "description": "Feature flag / toggle",
+      "legacyPatterns": [
+        "if (featureEnabled) { ... }",
+        "useFeatureFlag('feature-name')"
+      ]
+    },
+    {
+      "id": "condition.roleGuard",
+      "description": "Garde basée sur le rôle utilisateur",
+      "legacyPatterns": [
+        "userHasPermission(permissions, FEATURE)",
+        "isAdvertiser, isAgency, isAdmin"
+      ]
+    },
+    {
+      "id": "condition.dataGuard",
+      "description": "Garde basée sur l'état des données",
+      "legacyPatterns": [
+        "if (!data) return null",
+        "Vérification existence données avant rendu"
+      ]
+    },
+    {
+      "id": "event.handler",
+      "description": "Gestionnaire d'événement générique",
+      "legacyPatterns": [
+        "const handleEvent = (e) => { ... }",
+        "onEvent={handleEvent}"
+      ]
+    },
+    {
+      "id": "event.click",
+      "description": "Événement click",
+      "legacyPatterns": [
+        "onClick={onCreateCampaign}",
+        "onClick={() => setIsOpenGraph(!isOpenGraph)}"
+      ]
+    },
+    {
+      "id": "event.submit",
+      "description": "Événement submit de formulaire",
+      "legacyPatterns": [
+        "onSubmit={handleSubmit}",
+        "form.submit()"
+      ]
+    },
+    {
+      "id": "event.change",
+      "description": "Événement change (select, checkbox)",
+      "legacyPatterns": [
+        "onChange={handleTabChange}",
+        "<Tabs onChange={handleTabChange} value={selectedTab}>"
+      ]
+    },
+    {
+      "id": "event.input",
+      "description": "Événement input (saisie texte)",
+      "legacyPatterns": [
+        "onInput={handleInput}",
+        "onChange sur input texte"
+      ]
+    },
+    {
+      "id": "event.focusBlur",
+      "description": "Événements focus et blur",
+      "legacyPatterns": [
+        "onFocus={handleFocus}",
+        "onBlur={handleBlur}"
+      ]
+    },
+    {
+      "id": "event.keyboard",
+      "description": "Événements clavier",
+      "legacyPatterns": [
+        "onKeyDown={handleKeyDown}",
+        "onKeyPress, onKeyUp"
+      ]
+    },
+    {
+      "id": "event.mouse",
+      "description": "Événements souris (hover, drag)",
+      "legacyPatterns": [
+        "onMouseEnter, onMouseLeave",
+        "onMouseDown, onMouseUp"
+      ]
+    },
+    {
+      "id": "event.navigation",
+      "description": "Événement de navigation",
+      "legacyPatterns": [
+        "onClick={() => history.push(path)}",
+        "Déclenchement de navigation sur action"
+      ]
+    },
+    {
+      "id": "event.custom",
+      "description": "Événement personnalisé",
+      "legacyPatterns": [
+        "onIconAction",
+        "onDeactivateCampaignConfirmation",
+        "Callbacks métier spécifiques"
+      ]
+    },
+    {
+      "id": "layout.region",
+      "description": "Région principale de mise en page",
+      "legacyPatterns": [
+        "<StyledMainContent>",
+        "Zone principale du layout"
+      ]
+    },
+    {
+      "id": "layout.section",
+      "description": "Section de contenu",
+      "legacyPatterns": [
+        "<StyledInformationsContainer>",
+        "<StyledFilterContainer>",
+        "Groupement logique de contenu"
+      ]
+    },
+    {
+      "id": "layout.grid",
+      "description": "Grille de mise en page",
+      "legacyPatterns": [
+        "<Grid container>",
+        "<Grid item>",
+        "Material-UI Grid system"
+      ]
+    },
+    {
+      "id": "layout.stack",
+      "description": "Empilement vertical/horizontal",
+      "legacyPatterns": [
+        "Flexbox column/row",
+        "Stack de composants"
+      ]
+    },
+    {
+      "id": "layout.card",
+      "description": "Carte de contenu",
+      "legacyPatterns": [
+        "<Card>",
+        "<StyledBoxContent>",
+        "Conteneur avec bordures/ombres"
+      ]
+    },
+    {
+      "id": "layout.list",
+      "description": "Liste d'éléments",
+      "legacyPatterns": [
+        "{items.map(item => <Item key={item.id} />)}",
+        "<List>, <ListItem>"
+      ]
+    },
+    {
+      "id": "layout.table",
+      "description": "Tableau de données",
+      "legacyPatterns": [
+        "<CampaignsDetailTable tableProps={...} />",
+        "headBodyConfig, bodyData"
+      ]
+    },
+    {
+      "id": "layout.modal",
+      "description": "Fenêtre modale",
+      "legacyPatterns": [
+        "useModal()",
+        "modalProps",
+        "isModalOpen, onModalClose"
+      ]
+    },
+    {
+      "id": "layout.drawer",
+      "description": "Panneau latéral (drawer)",
+      "legacyPatterns": [
+        "<Drawer open={isOpen}>",
+        "Panneau coulissant"
+      ]
+    },
+    {
+      "id": "layout.panel",
+      "description": "Panneau de contenu",
+      "legacyPatterns": [
+        "<StyledGraphContainer>",
+        "Conteneur de section spécifique"
+      ]
+    },
+    {
+      "id": "layout.overlay",
+      "description": "Overlay / backdrop",
+      "legacyPatterns": [
+        "<Backdrop>",
+        "Couche de fond pour modales"
+      ]
+    },
+    {
+      "id": "layout.responsiveBreakpoint",
+      "description": "Point de rupture responsive",
+      "legacyPatterns": [
+        "theme.breakpoints.up('md')",
+        "Media queries dans styled-components"
+      ]
+    },
+    {
+      "id": "form.formRoot",
+      "description": "Racine d'un formulaire",
+      "legacyPatterns": [
+        "<form onSubmit={handleSubmit}>",
+        "Composant formulaire principal"
+      ]
+    },
+    {
+      "id": "form.field",
+      "description": "Champ de formulaire",
+      "legacyPatterns": [
+        "<TextField>",
+        "<Select>",
+        "Input avec name/value"
+      ]
+    },
+    {
+      "id": "form.fieldGroup",
+      "description": "Groupe de champs",
+      "legacyPatterns": [
+        "<FormGroup>",
+        "Groupement logique de champs"
+      ]
+    },
+    {
+      "id": "form.validationRule",
+      "description": "Règle de validation",
+      "legacyPatterns": [
+        "required: true",
+        "validate: (value) => ...",
+        "Règles de validation par champ"
+      ]
+    },
+    {
+      "id": "form.validationSchema",
+      "description": "Schéma de validation global",
+      "legacyPatterns": [
+        "Yup.object().shape({...})",
+        "Schéma de validation du formulaire"
+      ]
+    },
+    {
+      "id": "form.errorMessage",
+      "description": "Message d'erreur de validation",
+      "legacyPatterns": [
+        "error && <FormHelperText>{error}</FormHelperText>",
+        "Affichage des erreurs de champ"
+      ]
+    },
+    {
+      "id": "form.submitAction",
+      "description": "Action de soumission",
+      "legacyPatterns": [
+        "onSubmit={handleSubmit}",
+        "type='submit'"
+      ]
+    },
+    {
+      "id": "form.resetAction",
+      "description": "Action de réinitialisation",
+      "legacyPatterns": [
+        "clearFilters",
+        "onClearFilters",
+        "form.reset()"
+      ]
+    },
+    {
+      "id": "form.wizardStep",
+      "description": "Étape de wizard/assistant",
+      "legacyPatterns": [
+        "<Stepper activeStep={step}>",
+        "Formulaire multi-étapes"
+      ]
+    },
+    {
+      "id": "i18n.namespace",
+      "description": "Namespace de traduction",
+      "legacyPatterns": [
+        "useI18n('promoboostCampaignsList')",
+        "Namespace passé à useI18n"
+      ]
+    },
+    {
+      "id": "i18n.key",
+      "description": "Clé de traduction",
+      "legacyPatterns": [
+        "tCampaignsList('header.title')",
+        "tCampaignsList('body.tabs.campaigns')"
+      ]
+    },
+    {
+      "id": "i18n.message",
+      "description": "Message traduit",
+      "legacyPatterns": [
+        "{tCampaignsList('header.createCampaign')}",
+        "Valeur retournée par la fonction t"
+      ]
+    },
+    {
+      "id": "i18n.pluralRule",
+      "description": "Règle de pluralisation",
+      "legacyPatterns": [
+        "t('item', { count: n })",
+        "Clés _one, _other, _zero"
+      ]
+    },
+    {
+      "id": "i18n.interpolationVar",
+      "description": "Variable d'interpolation",
+      "legacyPatterns": [
+        "t('message', { name: value })",
+        "{{variable}} dans les traductions"
+      ]
+    },
+    {
+      "id": "i18n.localeFile",
+      "description": "Fichier de locale",
+      "legacyPatterns": [
+        "locales/fr.json",
+        "locales/en.json",
+        "Fichiers JSON de traductions"
+      ]
+    },
+    {
+      "id": "routing.routeConfig",
+      "description": "Configuration de route",
+      "legacyPatterns": [
+        "<Route path='...' component={...} />",
+        "Routes définies dans routes/"
+      ]
+    },
+    {
+      "id": "routing.routePath",
+      "description": "Chemin de route",
+      "legacyPatterns": [
+        "CAMPAIGN_CREATE_PATH",
+        "'/campaigns/:id'",
+        "Constantes de chemins"
+      ]
+    },
+    {
+      "id": "routing.routeParam",
+      "description": "Paramètre de route",
+      "legacyPatterns": [
+        "useParams()",
+        ":id dans le path",
+        "match.params.id"
+      ]
+    },
+    {
+      "id": "routing.queryParam",
+      "description": "Paramètre de query string",
+      "legacyPatterns": [
+        "useLocation().search",
+        "URLSearchParams",
+        "?filter=value"
+      ]
+    },
+    {
+      "id": "routing.routeGuard",
+      "description": "Garde de route (auth, permissions)",
+      "legacyPatterns": [
+        "PrivateRoute",
+        "Redirect si non authentifié"
+      ]
+    },
+    {
+      "id": "routing.redirect",
+      "description": "Redirection",
+      "legacyPatterns": [
+        "history.push(path)",
+        "<Redirect to={...} />",
+        "isRedirect"
+      ]
+    },
+    {
+      "id": "routing.nestedRoute",
+      "description": "Route imbriquée",
+      "legacyPatterns": [
+        "Routes enfants dans le composant parent",
+        "Outlet pattern"
+      ]
+    },
+    {
+      "id": "routing.routeLayout",
+      "description": "Layout de route",
+      "legacyPatterns": [
+        "Layout wrapper autour des routes",
+        "Header/Sidebar persistants"
+      ]
+    },
+    {
+      "id": "test.unitCase",
+      "description": "Test unitaire",
+      "legacyPatterns": [
+        "describe('Component', () => { it('should...', () => { ... }) })",
+        "Tests Jest dans __tests__/"
+      ]
+    },
+    {
+      "id": "test.integrationCase",
+      "description": "Test d'intégration",
+      "legacyPatterns": [
+        "render(<Component />); fireEvent...",
+        "Tests avec interactions multiples"
+      ]
+    },
+    {
+      "id": "test.e2eCase",
+      "description": "Test end-to-end",
+      "legacyPatterns": [
+        "Cypress, Playwright tests",
+        "Tests sur application complète"
+      ]
+    },
+    {
+      "id": "test.selector",
+      "description": "Sélecteur de test",
+      "legacyPatterns": [
+        "id={'pb_campaigns_detail_page_title'}",
+        "data-testid='...'",
+        "screen.getByTestId('...')"
+      ]
+    },
+    {
+      "id": "test.fixture",
+      "description": "Données de test (fixture)",
+      "legacyPatterns": [
+        "mockData dans __mocks__/",
+        "Données statiques pour tests"
+      ]
+    },
+    {
+      "id": "test.mock",
+      "description": "Mock de dépendance",
+      "legacyPatterns": [
+        "jest.mock('module')",
+        "__mocks__/ folder",
+        "vi.mock() pour Vitest"
+      ]
+    },
+    {
+      "id": "test.assertion",
+      "description": "Assertion de test",
+      "legacyPatterns": [
+        "expect(element).toBeInTheDocument()",
+        "expect(fn).toHaveBeenCalled()"
+      ]
+    },
+    {
+      "id": "test.scenario",
+      "description": "Scénario de test",
+      "legacyPatterns": [
+        "describe('when user clicks...', () => { ... })",
+        "Groupement de tests par scénario"
+      ]
+    },
+    {
+      "id": "a11y.role",
+      "description": "Rôle ARIA",
+      "legacyPatterns": [
+        "role='button'",
+        "role='dialog'",
+        "Attribut role sur éléments"
+      ]
+    },
+    {
+      "id": "a11y.ariaAttribute",
+      "description": "Attribut ARIA",
+      "legacyPatterns": [
+        "aria-label='...'",
+        "aria-describedby='...'",
+        "aria-hidden={true}"
+      ]
+    },
+    {
+      "id": "a11y.landmark",
+      "description": "Landmark ARIA (main, nav, etc.)",
+      "legacyPatterns": [
+        "<main>",
+        "<nav>",
+        "role='navigation'"
+      ]
+    },
+    {
+      "id": "a11y.focusTrap",
+      "description": "Piège de focus (modales)",
+      "legacyPatterns": [
+        "Focus trap dans modales",
+        "Gestion du focus dans Dialog"
+      ]
+    },
+    {
+      "id": "a11y.keyboardNav",
+      "description": "Navigation clavier",
+      "legacyPatterns": [
+        "tabIndex={0}",
+        "onKeyDown pour navigation",
+        "Gestion Enter/Space/Arrows"
+      ]
+    },
+    {
+      "id": "analytics.event",
+      "description": "Événement analytics",
+      "legacyPatterns": [
+        "trackEvent('category', 'action')",
+        "CommandersAct / GTM events"
+      ]
+    },
+    {
+      "id": "analytics.tag",
+      "description": "Tag de tracking",
+      "legacyPatterns": [
+        "data-tracking='...'",
+        "Attributs pour tracking automatique"
+      ]
+    },
+    {
+      "id": "performance.lazyChunk",
+      "description": "Code splitting / lazy loading",
+      "legacyPatterns": [
+        "React.lazy(() => import('...'))",
+        "Suspense pour lazy components"
+      ]
+    },
+    {
+      "id": "performance.memoization",
+      "description": "Mémoisation (useMemo, useCallback, memo)",
+      "legacyPatterns": [
+        "useMemo(() => computeValue, [deps])",
+        "useCallback(() => fn, [deps])",
+        "React.memo(Component)"
+      ]
+    }
+  ],
+  "migrationPriority": [
+    {
+      "priority": 1,
+      "concepts": ["structure.viewNode", "structure.rootView", "logic.localState"],
+      "reason": "Base du code, doit être migré en premier"
+    },
+    {
+      "priority": 2,
+      "concepts": ["routing.routePath", "routing.redirect", "i18n.namespace", "i18n.key"],
+      "reason": "Hooks de base remplacés directement"
+    },
+    {
+      "priority": 3,
+      "concepts": ["data.query", "data.mutation", "logic.businessRule"],
+      "reason": "Logique métier principale"
+    },
+    {
+      "priority": 4,
+      "concepts": ["layout.grid", "layout.table", "layout.modal", "event.click", "event.change"],
+      "reason": "Interface utilisateur"
+    },
+    {
+      "priority": 5,
+      "concepts": ["condition.roleGuard", "a11y.role", "test.unitCase"],
+      "reason": "Fonctionnalités transverses"
+    }
+  ],
+  "detectedInLegacy": {
+    "components": [
+      "CampaignsDetailContainer",
+      "CampaignInformationsContainer",
+      "CampaignsDetailFilters",
+      "CampaignsDetailGraph",
+      "CampaignsDetailTable"
+    ],
+    "hooks": [
+      "useCampaignsTable",
+      "useI18n",
+      "useHistory",
+      "useEmptyFilteredTableValues"
+    ],
+    "styledComponents": [
+      "StyledBoxContent",
+      "StyledContainer",
+      "StyledDiv",
+      "StyledFilterContainer",
+      "StyledGraphContainer",
+      "StyledInformationsContainer",
+      "StyledLoaderContent",
+      "StyledMainContent",
+      "StyledTitleContent",
+      "ArrowButtonContainer"
+    ],
+    "muiComponents": [
+      "Grid",
+      "IconButton",
+      "Tab",
+      "Tabs",
+      "Typography"
+    ],
+    "externalLibraries": [
+      "@material-ui/core",
+      "react-router-dom",
+      "styled-components"
+    ]
+  }
+}
